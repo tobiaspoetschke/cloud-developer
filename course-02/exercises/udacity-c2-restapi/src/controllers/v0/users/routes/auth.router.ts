@@ -1,23 +1,22 @@
-import { Router, Request, Response } from 'express';
+import {Request, Response, Router} from 'express';
 
-import { User } from '../models/User';
+import {User} from '../models/User';
 
 import * as bcrypt from 'bcrypt';
-import * as jwt from 'jsonwebtoken';
-import { NextFunction } from 'connect';
+import {NextFunction} from 'connect';
 
 import * as EmailValidator from 'email-validator';
 
 const router: Router = Router();
 
-// @ts-ignore
 async function generatePassword(plainTextPassword: string): Promise<string> {
-    //@TODO Use Bcrypt to Generated Salted Hashed Passwords
+    const saltRounds = 10;
+    const salt = await bcrypt.genSalt(saltRounds);
+    return await bcrypt.hash(plainTextPassword, salt);
 }
 
-// @ts-ignore
 async function comparePasswords(plainTextPassword: string, hash: string): Promise<boolean> {
-    //@TODO Use Bcrypt to Compare your password to your Salted Hashed Password
+    return await bcrypt.compare(plainTextPassword, hash);
 }
 
 // @ts-ignore
