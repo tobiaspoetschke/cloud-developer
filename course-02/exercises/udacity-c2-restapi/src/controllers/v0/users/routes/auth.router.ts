@@ -4,10 +4,13 @@ import {User} from '../models/User';
 
 import * as bcrypt from 'bcrypt';
 import {NextFunction} from 'connect';
+import * as jwt from 'jsonwebtoken';
 
 import * as EmailValidator from 'email-validator';
+import {config} from "../../../../config/config";
 
 const router: Router = Router();
+const c = config;
 
 async function generatePassword(plainTextPassword: string): Promise<string> {
     const saltRounds = 10;
@@ -19,9 +22,8 @@ async function comparePasswords(plainTextPassword: string, hash: string): Promis
     return await bcrypt.compare(plainTextPassword, hash);
 }
 
-// @ts-ignore
 function generateJWT(user: User): string {
-    //@TODO Use jwt to create a new JWT Payload containing
+    return jwt.sign({"email": user.email}, c.jwt.secret); // changed payload on my own, because there were sensitive information in it
 }
 
 export function requireAuth(req: Request, res: Response, next: NextFunction) {
